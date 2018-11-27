@@ -44,6 +44,8 @@ int main (int argc, char** argv)
     uint32_t id, size;
     uint32_t sum = 0;
     
+    FILE* fout = stdout;
+
     for (int i = 0 ; i < ops ; i++) {
         //read ops:  <a|r|f id size>
         fgets(line, MAX_LINE, trace);
@@ -59,6 +61,9 @@ int main (int argc, char** argv)
             mm_free(ptrs[id]);
             sol_free(sol_ptrs[id]);
         }
+
+        sol_print_heap_status(fout);
+        mm_print_heap_status(fout);
     }
     
     sum = (sum/(1024*1024))+1;
