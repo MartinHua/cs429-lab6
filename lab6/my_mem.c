@@ -22,6 +22,7 @@ Node* head;
 Node* cur;
 Node* pre;
 Node* best;
+Node* freeNode;
 int best_size;
 
 //This is your "heap". you will reserve/allocate and manage memory from this block.
@@ -81,12 +82,37 @@ void* mm_malloc(size_t size)
 void mm_free(void* ptr)
 {
     //TODO: do your work here
-    
+
     //if ptr is invalid (does not point to the start
     //of a memory block you allocated, emulate a SEGFAULT:
     if (ptr == 0) {
         printf("Segmentation fault.\n");
         exit(1);
+    }
+
+    pre = NULL;
+    cur = head;
+    while (cur != NULL && head + cur->offset < ptr) {
+        pre = cur;
+        cur = cur->next;
+    }
+    if (cur == NULL || head + cur->offset > ptr || cur->state == F) {
+        printf("Segmentation fault.\n");
+        exit(1);
+    }
+    cur->state = F;
+    if (pre != NULL && pre->state = F) {
+        cur = pre;
+    }
+    while (cur->next != NULL) {
+        if (cur->next->state == A) {
+            break;
+        }
+        freeNode = cur->next;
+        cur->size += freeNode->size;
+        cur->next = freeNode->next;
+        cur = cur->next;
+        free(freeNode);
     }
 }
 
@@ -120,6 +146,7 @@ void* mm_best_fit_malloc (size_t size)
 
         best->next = n;
         best->size -= size;
+        return heap + n->offset;
     }
     printf("Segmentation fault.\n");
     exit(1);
@@ -185,10 +212,10 @@ void mm_print_heap_status(FILE* fout)
      */
     cur = head;
     while (cur->next != NULL) {
-        fprintf(fout, "%d%s ", cur->size, cur->state == F ? "F" : "A");
+        fprintf(fout, "%lu%s ", cur->size, cur->state == F ? "F" : "A");
         cur = cur->next;
     }
-    fprintf(fout, "%d%s\n", cur->size, cur->state == F ? "F" : "A");
+    fprintf(fout, "%lu%s\n", cur->size, cur->state == F ? "F" : "A");
     /*
      *   Your code here. Because you are writing a file or maybe stdout (your terminal), instead of using printf, use fprintf
      *   It has the exact same syntax, but the first parameter is fout. This function assumes the file already exists. 
