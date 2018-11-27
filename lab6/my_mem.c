@@ -92,7 +92,7 @@ void mm_free(void* ptr)
 
     pre = NULL;
     cur = head;
-    while (cur != NULL && heap + cur->offset < ptr) {
+    while (cur != NULL && heap + cur->offset <= ptr) {
         pre = cur;
         cur = cur->next;
     }
