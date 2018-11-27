@@ -13,7 +13,7 @@ uint32_t next_multiple_of_8 (uint32_t n) {
 
 int main (int argc, char** argv)
 {
-    if (argc != 3) {
+    if (argc != 4) {
         printf("Two parameters required: <traces/filename> <normal or defrag>\n");
         return 1;
     }
@@ -46,7 +46,7 @@ int main (int argc, char** argv)
     
     FILE* fout = stdout;
 
-    for (int i = 0 ; i < 10 ; i++) {
+    for (int i = 0 ; i < atoi(argv[3]) ; i++) {
         //read ops:  <a|r|f id size>
         fgets(line, MAX_LINE, trace);
         sscanf(line, "%c %u %u", &op, &id, &size);
