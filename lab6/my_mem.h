@@ -6,10 +6,15 @@
 //this is a start of a linked list. You're free to ignore this and build your own
 //or extend this
 typedef struct Node Node;
+#define F 0
+#define A 1
 
 struct Node {
     Node* next;
     //some other fields...
+    size_t size;
+    size_t offset;
+    int state;
 };
 
 

@@ -19,7 +19,10 @@
 Node* head;
 
 //TODO: other pointers you may need to use here...
-
+Node* cur;
+Node* pre;
+Node* best;
+int best_size;
 
 //This is your "heap". you will reserve/allocate and manage memory from this block.
 //if you run out of memory or can't allocate any more, you should "throw" a
@@ -43,7 +46,12 @@ void my_mminit()
     mm_inited = 1;
 
     //TODO: initialize your data structure(s) here
-
+    Node* n = malloc(sizeof(Node));
+    n->next = NULL;
+    n->offset = 0;
+    n->size = HEAP_SIZE;
+    n->state = F;
+    head = n;
 }
 
 //you shouldn't need to change this, but feel free to do so if you want
@@ -88,7 +96,33 @@ void* mm_best_fit_malloc (size_t size)
     //again, to make sure you do this correctly, if you need to allocate some node in a linked list or whatever
     //structure you use, use malloc, eg., Node* n = malloc(sizeof(Node))
     //...some code..
+    cur = head;
+    best = NULL;
+    best_size = HEAP_SIZE + 1;
+    while (cur != NULL) {
+        if (cur->state == F && cur->size >= size) {
+            if (cur->size == size) {
+                cur->state = A;
+                return heap + cur->offset;
+            } else if (cur->size < best_size){
+                best = cur;
+                best_size = best->size;
+            }
+        }
+        cur = cur->next;
+    }
+    if (best != NULL) {
+        Node* n = malloc(sizeof(Node));
+        n->next = best->next;
+        n->offset = best->offset + best->size - size;
+        n->size = size;
+        n->state = A;
 
+        best->next = n;
+        best->size -= size;
+    }
+    printf("Segmentation fault.\n");
+    exit(1);
     //return a pointer to some address in the allocated 32MB heap, for example, the first time someone
     //calls mm_malloc, you will likely: "return heap+HEAP_SIZE-size", because there's only one free block in the heap (the
     //entire heap) and you're returning a pointer to the rightmost 'size' bytes of the heap that the user can then use
@@ -111,9 +145,28 @@ void* mm_first_fit_malloc (size_t size)
     /*
      *   TODO: Your code here
      */ 
-    
+    cur = head;
+    while (cur != NULL) {
+        if (cur->state == F && cur->size >= size) {
+            if (cur->size == size) {
+                cur->state = A;
+                return heap + cur->offset;
+            } else {
+                Node* n = malloc(sizeof(Node));
+                n->next = cur->next;
+                n->offset = cur->offset + cur->size - size;
+                n->size = size;
+                n->state = A;
 
-
+                cur->next = n;
+                cur->size -= size;
+                return heap + n->offset;
+            }
+        }
+        cur = cur->next;
+    }
+    printf("Segmentation fault.\n");
+    exit(1);
     /*******************************
      ******  THE MALLOC BELOW IS JUST A PLACEHOLDER SO THAT main CAN RUN.
      ******  YOUR TASK IS TO RESERVE MEMORY FROM byte_ptr heap; AND ONLY USE
@@ -130,7 +183,12 @@ void mm_print_heap_status(FILE* fout)
     /*
      *   TODO: Your code here
      */
-
+    cur = head;
+    while (cur->next != NULL) {
+        fprintf(fout, "%d%s ", cur->size, cur->state == F ? "F" : "A");
+        cur = cur->next;
+    }
+    fprintf(fout, "%d%s\n", cur->size, cur->state == F ? "F" : "A");
     /*
      *   Your code here. Because you are writing a file or maybe stdout (your terminal), instead of using printf, use fprintf
      *   It has the exact same syntax, but the first parameter is fout. This function assumes the file already exists. 
