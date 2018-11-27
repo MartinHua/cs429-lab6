@@ -29,6 +29,16 @@ int main()
     printf("You should see 33554160F 256A 16A next:\n");
     mm_print_heap_status(fout);
 
+    mm_free(not_used);
+
+    printf("You should see 33554216F 16A next:\n");
+    mm_print_heap_status(fout);
+    
+    char* not_used2 = mm_malloc(256);
+
+    printf("You should see 33554160F 256A 16A next:\n");
+    mm_print_heap_status(fout);
+
     mm_free(buf);
 
     printf("You should see 33554160F 256A 16F next:\n");
