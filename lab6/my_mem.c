@@ -22,7 +22,7 @@ Node* head;
 Node* cur;
 Node* pre;
 Node* best;
-Node* freeNode;
+Node* reversed;
 int best_size;
 
 //This is your "heap". you will reserve/allocate and manage memory from this block.
@@ -108,9 +108,8 @@ void mm_free(void* ptr)
         if (cur->next->state == A) {
             break;
         }
-        freeNode = cur->next;
-        cur->size += freeNode->size;
-        cur->next = freeNode->next;
+        cur->size += cur->next->size;
+        cur->next = cur->next->next;
     }
 }
 
@@ -228,7 +227,28 @@ void  mm_defragment()
     /*
      *   TODO: Your code here
      */
-
+    // reverse linked list
+    reversed = NULL;
+    cur = head;
+    while (cur != NULL){
+        pre = cur;
+        cur = cur->next;
+        pre->next = reversed;
+        reversed = pre;
+    }
+    // strncpy
+    Node* n = malloc(sizeof(Node));
+    n->next = NULL;
+    n->offset = 0;
+    n->size = HEAP_SIZE;
+    n->state = F;
+    head = n;
+    while (reversed != NULL) {
+        if (reversed->state == A) {
+            strncpy(mm_malloc(reversed->size), heap + reversed->offset, reversed->size);
+        }
+        reversed = reversed->next;
+    }
     /*
      * Push all occupied blocks to the right, and make one big free block on the left.
      */ 
