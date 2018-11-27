@@ -46,12 +46,12 @@ int main (int argc, char** argv)
     
     FILE* fout = stdout;
 
-    for (int i = 0 ; i < ops ; i++) {
+    for (int i = 0 ; i < 10 ; i++) {
         //read ops:  <a|r|f id size>
         fgets(line, MAX_LINE, trace);
         sscanf(line, "%c %u %u", &op, &id, &size);
 
-        //printf("got:  %c  %u  %u\n", op, id, size);
+        printf("got:  %c  %u  %u\n", op, id, size);
         if (op == 'a') {
             sum += next_multiple_of_8(size);
             ptrs[id] = mm_malloc(size);
