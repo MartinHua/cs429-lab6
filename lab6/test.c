@@ -14,7 +14,7 @@ uint32_t next_multiple_of_8 (uint32_t n) {
 int main (int argc, char** argv)
 {
     if (argc < 3 || argc > 4) {
-        printf("Two parameters required: <traces/filename> <normal or defrag>\n");
+        printf("Two parameters required: <traces/filename> <normal or defrag or test>\n");
         return 1;
     }
 
@@ -65,8 +65,10 @@ int main (int argc, char** argv)
             sol_free(sol_ptrs[id]);
         }
 
-        sol_print_heap_status(fout);
-        mm_print_heap_status(fout);
+        if (strcmp(argv[2], "test") == 0) {
+            sol_print_heap_status(fout);
+            mm_print_heap_status(fout);
+        }
     }
     
     sum = (sum/(1024*1024))+1;
