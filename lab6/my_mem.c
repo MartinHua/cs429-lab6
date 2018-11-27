@@ -111,7 +111,6 @@ void mm_free(void* ptr)
         freeNode = cur->next;
         cur->size += freeNode->size;
         cur->next = freeNode->next;
-        cur = cur->next;
     }
 }
 
