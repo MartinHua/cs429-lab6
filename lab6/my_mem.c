@@ -92,16 +92,16 @@ void mm_free(void* ptr)
 
     pre = NULL;
     cur = head;
-    while (cur != NULL && head + cur->offset < ptr) {
+    while (cur != NULL && heap + cur->offset < ptr) {
         pre = cur;
         cur = cur->next;
     }
-    if (cur == NULL || head + cur->offset > ptr || cur->state == F) {
+    if (cur == NULL || heap + cur->offset > ptr || cur->state == F) {
         printf("Segmentation fault.\n");
         exit(1);
     }
     cur->state = F;
-    if (pre != NULL && pre->state = F) {
+    if (pre != NULL && pre->state == F) {
         cur = pre;
     }
     while (cur->next != NULL) {
