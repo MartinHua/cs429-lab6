@@ -13,7 +13,7 @@ uint32_t next_multiple_of_8 (uint32_t n) {
 
 int main (int argc, char** argv)
 {
-    if (argc < 3 || argc > 4) {
+    if (argc != 3) {
         printf("Two parameters required: <traces/filename> <normal or defrag or test>\n");
         return 1;
     }
@@ -46,9 +46,6 @@ int main (int argc, char** argv)
     
     FILE* fout = stdout;
 
-    if (argc == 4) {
-        ops = atoi(argv[3]);
-    }
     for (int i = 0 ; i < ops ; i++) {
         //read ops:  <a|r|f id size>
         fgets(line, MAX_LINE, trace);
